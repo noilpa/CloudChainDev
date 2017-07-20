@@ -98,13 +98,13 @@ contract CloudDevContract {
 
         if(CheckUserUnique(_address)) {
 
+            throw;
+        }
+        else {
+            
             project.users[_address].cash += _cash;
             project.users[_address].voicePower = _cash / 100; // формулу для голоса выберем позже
             SetStatus(_address);
-        }
-        else {
-
-            throw;
         }
     }
 
@@ -119,20 +119,43 @@ contract CloudDevContract {
         return true;
     }
 
+    function GetAllAddresses() returns (address[]) {
 
-    // Получение статуса проекта: собранная сумма, участники, стоимость проекта, правки
-    // Вопрос как венуть mapping? return Shareholder[] 
-    /*
-    function GetProjectStatus() returns() {
+        return project.usersKey;
+    }
+
+    function GetUser(address _address) returns (uint, uint, uint) {
 
         return (
-
-                );
+            project.users[_address].cash,
+            project.users[_address].voicePower,
+            project.users[_address].status
+        );
     }
+
+
+    // Получение статуса проекта: собранная сумма, участники, стоимость проекта, правки
+    function GetProjectStatus() constant returns(uint[] , string, string, string, uint, uint, uint) {
+
+        uint sum = 0; //Сколько собрали
+
+        for (uint i=0; i<project.usersKey.length-1; i++ ) {
+            sum += project.users[project.usersKey[i]].cash; 
+        }
+        return (project.usersKey,
+                project.summary,
+                project.description,
+                project.dueDate,
+                project.price,
+                project.votersNumberMax,
+                sum
+                );
+            
+}
 
     // Добоваление правок в проект
     function SetEdits(string _edits) {
         project.edits = _edits;
     }
-    */
+    
 }
