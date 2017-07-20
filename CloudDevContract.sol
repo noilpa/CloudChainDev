@@ -1,6 +1,5 @@
 pragma solidity ^0.4.11;
 
-//import "https://github.com/ethereum/dapp-bin/library/iterable_mapping.sol"; // пока не нужно
 
 contract CloudDevContract {
 
@@ -13,8 +12,8 @@ contract CloudDevContract {
         uint minCashVoting;                      // минимальный порог для участия в голосовании
         string dueDate;                          // срок выполнения проекта
         bytes32 filesHash;                       // хэш файлов которые приложил
-        uint votersNumberMax;                    // максимальное число голосующих
-        uint votersNumberCurrent;                // текущее число голосующих
+        uint votersNumberMax;                    // максимальное число голосующих в проекте
+        uint votersNumberCurrent;                // текущее число голосующих в проекте
         address[] usersKey;                      // массив уникальных адресов
         mapping (address => Shareholder) users;  // акционеры проекта
     }
@@ -29,7 +28,7 @@ contract CloudDevContract {
 
     // Занесение паспорта проекта в БЧ
     // На этапе создания БЧ основатель согласился внести требуемую сумму
-    // test: 
+    // test data string: 
     function CloudDevContract(string _summary, string _description, uint _price, string _dueDate, address _address, uint _cash, uint _votersNumberMax) {
 
         project.summary = _summary;
@@ -44,22 +43,31 @@ contract CloudDevContract {
      
     }
 
+    // Занесение нового адреса 
+    function AddUserAddress(address _address) {
+        
+        project.usersKey.length++;
+        project.usersKey[project.usersKey.length-1] = _address;
+    }
+
     // Добавление акционера к проекту 
     function AddShareholder(address _address, uint _cash) {
 
         if(CheckUserUnique(_address)) {
-        
-            throw;
+
+            AddUserAddress(_address);
+            project.users[_address].cash = _cash;
+            project.users[_address].voicePower = _cash / 100; // формулу для голоса выберем позже
+            SetStatus(_address);
         }
         else {
 
-            project.users[_address].cash = _cash;
-            project.users[_address].voicePower = _cash / 100; // формулу для голоса выберем позже
-            SetStatus(_address, _cash);
+            throw;
         }
     }
 
-    function SetStatus(address _address, uint _cash) {
+    // Установление статуса акционеру
+    function SetStatus(address _address) {
         
         if(project.votersNumberCurrent == 0) {
 
@@ -75,7 +83,7 @@ contract CloudDevContract {
         }
         else if(project.users[_address].cash < project.minCashVoting) {
 
-            project.users[_address].status = 3;
+            throw;
         }
         else {
 
@@ -92,7 +100,7 @@ contract CloudDevContract {
 
             project.users[_address].cash += _cash;
             project.users[_address].voicePower = _cash / 100; // формулу для голоса выберем позже
-            SetStatus(_address, project.users[_address].cash);
+            SetStatus(_address);
         }
         else {
 
