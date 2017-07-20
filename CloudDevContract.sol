@@ -1,4 +1,4 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.4.10;
 
 
 contract CloudDevContract {
@@ -28,7 +28,7 @@ contract CloudDevContract {
 
     // Занесение паспорта проекта в БЧ
     // На этапе создания БЧ основатель согласился внести требуемую сумму
-    // test data string: 
+    // test data string: "sum", "descr", 100, "17.10.1994", "0xa28b9f0cf273e0aef6db14ce13c0979e03c0c20d", 40, 2
     function CloudDevContract(string _summary, string _description, uint _price, string _dueDate, address _address, uint _cash, uint _votersNumberMax) {
 
         project.summary = _summary;
@@ -135,7 +135,7 @@ contract CloudDevContract {
 
 
     // Получение статуса проекта: собранная сумма, участники, стоимость проекта, правки
-    function GetProjectStatus() constant returns(uint[] , string, string, string, uint, uint, uint) {
+    function GetProjectStatus() constant returns(address[] , string, string, string, uint, uint, uint) {
 
         uint sum = 0; //Сколько собрали
 
