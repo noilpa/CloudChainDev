@@ -119,12 +119,12 @@ contract CloudDevContract {
         return true;
     }
 
-    function GetAllAddresses() returns (address[]) {
+    function GetAllAddresses() constant returns (address[]) {
 
         return project.usersKey;
     }
 
-    function GetUser(address _address) returns (uint, uint, uint) {
+    function GetUser(address _address) constant returns (uint, uint, uint) {
 
         return (
             project.users[_address].cash,
